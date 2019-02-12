@@ -1,0 +1,32 @@
+language: go
+
+go:
+  - 1.8
+  - 1.9
+  - "1.10"
+  - "1.11"
+  - tip
+
+before_install:
+  - export DEBIAN_FRONTEND=noninteractive
+  - sudo apt-get update
+  - sudo apt-get install -y curl tor
+
+install:
+  - cd $HOME/gopath/src/github.com/leonklingele/sockstun
+  - cd cmd/sockstun
+  - go install -v .
+  - make config
+
+before_script:
+  - DOMAIN="travis-ci.org"
+  - echo "127.0.0.1 $DOMAIN" | sudo tee -a /etc/hosts
+  - echo -e "[rules.mail-IMAP]\nlocal  = \"localhost:8443\"\nremote = \"$DOMAIN:443\"" >> $HOME/.sockstun/config.toml
+
+script:
+  - sockstun &
+  - sleep 4 # TODO(leon): Ugly
+  - DOMAIN="travis-ci.org"
+  - HEADERS="$(curl -I -s https://$DOMAIN:8443/)"
+  - STATUS="$(echo $HEADERS | head -n1)"
+  - if [[ "$STATUS" != *"200 OK"* ]]; then echo "$HEADERS"; exit 1; fi
