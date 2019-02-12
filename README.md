@@ -1,5 +1,7 @@
 # SOCKSTun – Tunnel TCP sockets through a SOCKS proxy
 
+[![Build Status](https://travis-ci.org/leonklingele/sockstun.svg?branch=master)](https://travis-ci.org/leonklingele/sockstun)
+
 `sockstun` allows to proxy TCP packets from one socket to another through a SOCKS proxy.
 
 ## Why this is useful
