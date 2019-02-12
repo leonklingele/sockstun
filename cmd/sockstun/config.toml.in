@@ -1,0 +1,13 @@
+# SOCKS proxy URI
+socks_uri  = "socks5://localhost:9050"
+# Read and write timeout, "0s" for no timeout
+rw_timeout = "0s"
+
+# Rule set
+[rules]
+# A rule named "mail-IMAP", SOCKS-proxying localhost:1993 to mail.yourdomain.com:993
+#[rules.mail-IMAP]
+# Local socket
+#local  = "localhost:1993"
+# Remote socket
+#remote = "mail.yourdomain.com:993"
