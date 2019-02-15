@@ -19,6 +19,7 @@ install:
   - make config
 
 before_script:
+  - sed -i 's/9125/9050/' $HOME/.sockstun/config.toml
   - DOMAIN="travis-ci.org"
   - echo "127.0.0.1 $DOMAIN" | sudo tee -a /etc/hosts
   - echo -e "[rules.www-travis]\nlocal  = \"localhost:8443\"\nremote = \"$DOMAIN:443\"" >> $HOME/.sockstun/config.toml
