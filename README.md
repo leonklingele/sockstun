@@ -20,7 +20,7 @@ sockstun -help
 
 ### Overview
 
-In this setup guide we want to proxy TCP traffic reaching the following local ports through a Tor SOCKS proxy running at `localhost:9050`:
+In this setup guide we want to proxy TCP traffic reaching the following local ports through a Tor SOCKS proxy running at `localhost:9125`:
 
 - `localhost:1587` to `mail.leonklingele.de:587` (SMTP submission)
 - `localhost:1993` to `mail.leonklingele.de:993` (IMAP)
@@ -38,7 +38,7 @@ Then, edit `sockstun`'s config file so it looks as follows:
 ```sh
 $ cat ~/.sockstun/config.toml
 # SOCKS proxy URI
-socks_uri  = "socks5://localhost:9050"
+socks_uri  = "socks5://localhost:9125"
 # Read and write timeout
 rw_timeout = "0s"
 
@@ -51,6 +51,9 @@ remote = "mail.leonklingele.de:993"
 local  = "localhost:1587"
 remote = "mail.leonklingele.de:587"
 ```
+
+__Note__: If using a Tor SOCKS proxy, remember to [not mix modes of anonymity](https://trac.torproject.org/projects/tor/wiki/doc/TorifyHOWTO#Remember:Modesofanonymitydonotmix)!
+See section [Setting up multiple Tor sessions](#setting-up-multiple-tor-sessions) on how to set up another Tor session.
 
 Now simply start `sockstun`:
 
@@ -81,3 +84,18 @@ Use Port `1993` instead of `993`:
 Use Port `1587` instead of `587`:
 
 ![mail-settings-submission](https://www.leonklingele.de/sockstun/mail-settings-submission.png?20190212)
+
+### Setting up multiple Tor sessions
+
+It is advised to not use the same Tor instance for traffic of two different anonymity classes. Please read https://trac.torproject.org/projects/tor/wiki/doc/TorifyHOWTO#Remember:Modesofanonymitydonotmix before continuing.
+
+Follow these steps to launch another instance of Tor with a SOCKS proxy listening at `localhost:9125`:
+
+```sh
+$ mkdir -p /usr/local/etc/tor/mail
+$ cat <<EOF > /usr/local/etc/tor/mail
+	DataDirectory /usr/local/etc/tor/mail
+	SocksPort 127.0.0.1:9125
+EOF
+$ tor -f /usr/local/etc/tor/mail/torrc
+```

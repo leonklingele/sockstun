@@ -1,5 +1,5 @@
 # SOCKS proxy URI
-socks_uri  = "socks5://localhost:9050"
+socks_uri  = "socks5://localhost:9125"
 # Read and write timeout, "0s" for no timeout
 rw_timeout = "0s"
 
