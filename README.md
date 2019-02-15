@@ -93,7 +93,7 @@ Follow these steps to launch another instance of Tor with a SOCKS proxy listenin
 
 ```sh
 $ mkdir -p /usr/local/etc/tor/mail
-$ cat <<EOF > /usr/local/etc/tor/mail
+$ cat <<EOF > /usr/local/etc/tor/mail/torrc
 	DataDirectory /usr/local/etc/tor/mail
 	SocksPort 127.0.0.1:9125
 EOF
