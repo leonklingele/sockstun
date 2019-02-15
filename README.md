@@ -33,13 +33,13 @@ First, ensure the domain you want to connect to resolves to localhost, in our ca
 $ echo "127.0.0.1 mail.leonklingele.de" | sudo tee -a /etc/hosts
 ```
 
-Then, edit `sockstun`'s config file so it looks as follows:
+Then, edit `sockstun`'s config file:
 
 ```sh
 $ cat ~/.sockstun/config.toml
 # SOCKS proxy URI
 socks_uri  = "socks5://localhost:9125"
-# Read and write timeout
+# Read and write timeout, "0s" for no timeout
 rw_timeout = "0s"
 
 # Rule set
