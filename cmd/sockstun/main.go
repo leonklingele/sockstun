@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	version = "1.0.0-unreleased"
+	version = "1.0.0"
 
 	defaultConfigFilePath = "$HOME/.sockstun/config.toml"
 )
