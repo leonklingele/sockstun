@@ -15,12 +15,8 @@ const (
 	defaultConfigFilePath = "$HOME/.sockstun/config.toml"
 )
 
-var (
-	configFilePath = flag.String("config", defaultConfigFilePath, "optional, path to config file") // nolint: gochecknoglobals
-)
-
-func run() error {
-	cfp, err := annotateConfigFilePath(*configFilePath)
+func run(cfp string) error {
+	cfp, err := annotateConfigFilePath(cfp)
 	if err != nil {
 		return errors.Wrap(err, "failed to annotate config file path")
 	}
@@ -42,9 +38,10 @@ func run() error {
 }
 
 func main() {
+	configFilePath := flag.String("config", defaultConfigFilePath, "optional, path to config file")
 	flag.Parse()
 
-	if err := run(); err != nil {
+	if err := run(*configFilePath); err != nil {
 		log.Fatal(err)
 	}
 }
