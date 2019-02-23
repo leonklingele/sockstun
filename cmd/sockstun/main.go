@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"log"
 	"os"
 
@@ -12,6 +13,8 @@ import (
 )
 
 const (
+	version = "1.0.0-unreleased"
+
 	defaultConfigFilePath = "$HOME/.sockstun/config.toml"
 )
 
@@ -38,8 +41,14 @@ func run(cfp string) error {
 }
 
 func main() {
+	printVersion := flag.Bool("version", false, "show version and exit")
 	configFilePath := flag.String("config", defaultConfigFilePath, "optional, path to config file")
 	flag.Parse()
+
+	if *printVersion {
+		fmt.Printf("v%s\n", version)
+		os.Exit(0)
+	}
 
 	if err := run(*configFilePath); err != nil {
 		log.Fatal(err)
