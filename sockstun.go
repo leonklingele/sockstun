@@ -47,14 +47,14 @@ func (st *SOCKSTunnel) Run(ctx context.Context) error {
 	for _, r := range st.fwdTable {
 		r := r
 		eg.Go(func() error {
-			return st.enable(r, ctx)
+			return st.enable(ctx, r)
 		})
 	}
 	st.fwdTableMu.RUnlock()
 	return eg.Wait()
 }
 
-func (st *SOCKSTunnel) enable(r fwdRule, ctx context.Context) error {
+func (st *SOCKSTunnel) enable(ctx context.Context, r fwdRule) error {
 	l, err := net.Listen(st.proto, r.localSock)
 	if err != nil {
 		return errors.Wrap(err, "failed to listen on local socket")
