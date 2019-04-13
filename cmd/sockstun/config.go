@@ -31,6 +31,7 @@ func (d *duration) UnmarshalText(text []byte) error {
 	return err
 }
 
+//nolint:unparam
 func (d duration) MarshalText() ([]byte, error) {
 	return []byte(d.String()), nil
 }
