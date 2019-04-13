@@ -85,6 +85,27 @@ Use Port `1587` instead of `587`:
 
 ![mail-settings-submission](https://www.leonklingele.de/sockstun/mail-settings-submission.png?20190212)
 
+#### Using Tor Hidden Services (.onion domains)
+
+`sockstun` works with Tor Hidden Services, too!
+
+```sh
+$ cat ~/.sockstun/config.toml
+# SOCKS proxy URI
+socks_uri  = "socks5://localhost:9125"
+# Read and write timeout, "0s" for no timeout
+rw_timeout = "0s"
+
+# Rule set
+[rules]
+[rules.mail-leonklingele-imap]
+local  = "localhost:1993"
+remote = "gdgd33bknbocpyno5fraft356hh6hc7xaejchjjh4cxnbhxzduq2fiqd.onion:993"
+[rules.mail-leonklingele-submission]
+local  = "localhost:1587"
+remote = "gdgd33bknbocpyno5fraft356hh6hc7xaejchjjh4cxnbhxzduq2fiqd.onion:587"
+```
+
 ### Setting up multiple Tor sessions
 
 It is advised to not use the same Tor instance for traffic of two different anonymity classes. Please read https://trac.torproject.org/projects/tor/wiki/doc/TorifyHOWTO#Remember:Modesofanonymitydonotmix before continuing.
