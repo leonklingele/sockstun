@@ -27,7 +27,7 @@ func (r fwdRule) String() string {
 
 type SOCKSTunnel struct {
 	proto       string
-	socksDialer proxy.Dialer
+	socksDialer proxy.ContextDialer
 	rwTimeout   time.Duration
 	fwdTable    []fwdRule
 	fwdTableMu  sync.RWMutex
@@ -88,14 +88,14 @@ func (st *SOCKSTunnel) enable(ctx context.Context, r fwdRule) error {
 			continue
 		}
 		go func() {
-			if err := st.handle(conn, r); err != nil {
+			if err := st.handle(ctx, conn, r); err != nil {
 				st.log.Printf("failed to handle conn on local socket %s: %v", r.localSock, err)
 			}
 		}()
 	}
 }
 
-func (st *SOCKSTunnel) handle(conn net.Conn, r fwdRule) error {
+func (st *SOCKSTunnel) handle(ctx context.Context, conn net.Conn, r fwdRule) error {
 	var (
 		doCleanup   = true
 		cleanupFunc = func() {
@@ -116,9 +116,7 @@ func (st *SOCKSTunnel) handle(conn net.Conn, r fwdRule) error {
 		}
 	}()
 
-	// TODO(leon): Use DialWithContext instead, once implemented upstream
-	// See https://github.com/golang/go/issues/17759
-	sconn, err := st.socksDialer.Dial(st.proto, r.remoteSock)
+	sconn, err := st.socksDialer.DialContext(ctx, st.proto, r.remoteSock)
 	if err != nil {
 		return errors.Wrap(err, "failed to dial SOCKS proxy")
 	}
@@ -181,9 +179,15 @@ func New(socksURI string, rwTimeout time.Duration, log *log.Logger) (*SOCKSTunne
 		return nil, errors.Wrap(err, "failed to create SOCKS dialer")
 	}
 
+	ctxDialer, ok := dialer.(proxy.ContextDialer)
+	if !ok {
+		// This will never happen. proxy.Direct implements proxy.ContextDialer.
+		panic("failed to type assert to proxy.ContextDialer")
+	}
+
 	return &SOCKSTunnel{
 		proto:       "tcp",
-		socksDialer: dialer,
+		socksDialer: ctxDialer,
 		rwTimeout:   rwTimeout,
 		log:         log,
 	}, nil
