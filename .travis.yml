@@ -15,7 +15,7 @@ before_install:
   - sleep 5 # Allow Tor to establish network connection
 
 install:
-  - cd $HOME/gopath/src/github.com/leonklingele/sockstun
+  - cd $GOPATH/src/github.com/leonklingele/sockstun
   - cd cmd/sockstun
   - go install -v .
   - make config
