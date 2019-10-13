@@ -19,14 +19,14 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:0a004b4ff5794b399b3556e68f0c436a57d5f7e437e740bb16c0b521ceb23fd7"
+  digest = "1:2dc81953e31e2526079f658f2fbbd84c71849a863a44346b2961ddb071ba55d7"
   name = "golang.org/x/net"
   packages = [
     "internal/socks",
     "proxy",
   ]
   pruneopts = "UT"
-  revision = "65e2d4e15006aab9813ff8769e768bbf4bb667a0"
+  revision = "7f726cade0ab7c929c16ce0b5b25bd201e25f39f"
 
 [[projects]]
   branch = "master"

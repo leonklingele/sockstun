@@ -1,19 +1,22 @@
 language: go
 
 go:
-  - 1.8
-  - 1.9
-  - "1.10"
-  - "1.11"
+  - 1.8.x
+  - 1.9.x
+  - 1.10.x
+  - 1.11.x
+  - 1.12.x
+  - 1.13.x
   - tip
 
 before_install:
   - export DEBIAN_FRONTEND=noninteractive
   - sudo apt-get update
   - sudo apt-get install -y curl tor
+  - sleep 5 # Allow Tor to establish network connection
 
 install:
-  - cd $HOME/gopath/src/github.com/leonklingele/sockstun
+  - cd $GOPATH/src/github.com/leonklingele/sockstun
   - cd cmd/sockstun
   - go install -v .
   - make config
@@ -26,7 +29,6 @@ before_script:
 
 script:
   - sockstun &
-  - sleep 4 # TODO(leon): Ugly
   - DOMAIN="travis-ci.org"
   - HEADERS="$(curl -I -s https://$DOMAIN:8443/)"
   - STATUS="$(echo $HEADERS | head -n1)"
