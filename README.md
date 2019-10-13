@@ -113,10 +113,10 @@ It is advised to not use the same Tor instance for traffic of two different anon
 Follow these steps to launch another instance of Tor with a SOCKS proxy listening at `localhost:9125`:
 
 ```sh
-$ mkdir -p /usr/local/etc/tor/mail
-$ cat <<EOF > /usr/local/etc/tor/mail/torrc
-	DataDirectory /usr/local/etc/tor/mail
+$ mkdir -p /usr/local/etc/tor/sockstun
+$ cat <<EOF > /usr/local/etc/tor/sockstun/torrc
+	DataDirectory /usr/local/etc/tor/sockstun
 	SocksPort 127.0.0.1:9125 IsolateClientProtocol IsolateDestAddr IsolateDestPort
 EOF
-$ tor -f /usr/local/etc/tor/mail/torrc
+$ tor -f /usr/local/etc/tor/sockstun/torrc
 ```
