@@ -52,7 +52,7 @@ local  = "localhost:1587"
 remote = "mail.leonklingele.de:587"
 ```
 
-__Note__: If using a Tor SOCKS proxy, remember to [not mix modes of anonymity](https://trac.torproject.org/projects/tor/wiki/doc/TorifyHOWTO#Remember:Modesofanonymitydonotmix)!
+__Note__: If using a Tor SOCKS proxy, remember to [not mix modes of anonymity](https://trac.torproject.org/projects/tor/wiki/doc/TorifyHOWTO#Remember:Modesofanonymitydonotmix) and always isolate streams on a per-client-protocol-, per-destination-address- and per-destination-port-basis!
 See section [Setting up multiple Tor sessions](#setting-up-multiple-tor-sessions) on how to set up another Tor session.
 
 Now simply start `sockstun`:
@@ -116,7 +116,7 @@ Follow these steps to launch another instance of Tor with a SOCKS proxy listenin
 $ mkdir -p /usr/local/etc/tor/mail
 $ cat <<EOF > /usr/local/etc/tor/mail/torrc
 	DataDirectory /usr/local/etc/tor/mail
-	SocksPort 127.0.0.1:9125
+	SocksPort 127.0.0.1:9125 IsolateClientProtocol IsolateDestAddr IsolateDestPort
 EOF
 $ tor -f /usr/local/etc/tor/mail/torrc
 ```
