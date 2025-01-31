@@ -1,6 +1,6 @@
 # SOCKSTun – Tunnel TCP sockets through a SOCKS proxy
 
-[![Build Status](https://travis-ci.org/leonklingele/sockstun.svg?branch=master)](https://travis-ci.org/leonklingele/sockstun)
+![build](https://github.com/leonklingele/sockstun/actions/workflows/build.yml/badge.svg)
 
 `sockstun` allows to proxy TCP packets from one socket to another through a SOCKS proxy.
 
@@ -12,7 +12,7 @@ If you prefer to connect to your mail server through Tor for privacy reasons, `s
 ## Installation
 
 ```sh
-go get -u github.com/leonklingele/sockstun/...
+go install github.com/leonklingele/sockstun/cmd/sockstun@latest
 sockstun -help
 ```
 
@@ -113,10 +113,10 @@ It is advised to not use the same Tor instance for traffic of two different anon
 Follow these steps to launch another instance of Tor with a SOCKS proxy listening at `localhost:9125`:
 
 ```sh
-$ mkdir -p /usr/local/etc/tor/sockstun
-$ cat <<EOF > /usr/local/etc/tor/sockstun/torrc
-	DataDirectory /usr/local/etc/tor/sockstun
+$ mkdir -p ~/.sockstun
+$ cat <<EOF > ~/.sockstun/torrc
+	DataDirectory ~/.sockstun/tor
 	SocksPort 127.0.0.1:9125 IsolateClientProtocol IsolateDestAddr IsolateDestPort
 EOF
-$ tor -f /usr/local/etc/tor/sockstun/torrc
+$ tor -f ~/.sockstun/torrc
 ```

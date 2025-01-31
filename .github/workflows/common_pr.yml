@@ -1,0 +1,31 @@
+name: common for pull requests
+
+on:
+  - pull_request
+  - workflow_dispatch
+
+jobs:
+  commitlint:
+    strategy:
+      matrix:
+        platform:
+          - ubuntu-latest
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: cachix/install-nix-action@v27
+        with:
+          nix_path: nixpkgs=channel:nixos-24.11
+      - run: |
+          [[ -f commitlint.config.ts ]] || cat > commitlint.config.ts <<EOF
+          export default {
+            extends: ['@commitlint/config-conventional'],
+            rules: {
+              'body-max-line-length': [2, 'always', 200],
+              'footer-max-line-length': [2, 'always', 200],
+            },
+          };
+          EOF
+      - run: nix-shell -p git nodejs --run 'npm install --save-dev @commitlint/{cli,config-conventional} && npx commitlint --strict --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --config commitlint.config.ts'

@@ -2,13 +2,14 @@ package main
 
 import (
 	"context"
-	"flag"
+	"flag" //nolint:depguard // We only allow to import the flag package in here
 	"fmt"
-	"log"
+	"log" //nolint:depguard // TODO: Replace by log/slog
 	"os"
 
 	"github.com/leonklingele/sockstun"
 	"github.com/leonklingele/sockstun/cmd/sockstun/pathutil"
+
 	"github.com/pkg/errors"
 )
 
@@ -28,8 +29,8 @@ func run(cfp string) error {
 		return err
 	}
 
-	log := log.New(os.Stderr, "", log.LstdFlags)
-	st, err := sockstun.New(c.SOCKSURI, c.RWTimeout.Duration, log)
+	logger := log.New(os.Stderr, "", log.LstdFlags)
+	st, err := sockstun.New(c.SOCKSURI, c.RWTimeout.Duration, logger)
 	if err != nil {
 		return errors.Wrap(err, "failed to create sockstun")
 	}
@@ -37,7 +38,7 @@ func run(cfp string) error {
 		st.Add(n, r.LocalSock, r.RemoteSock)
 	}
 	ctx := context.Background()
-	return st.Run(ctx)
+	return st.Run(ctx) //nolint:wrapcheck // No need to wrap this
 }
 
 func main() {
@@ -46,7 +47,7 @@ func main() {
 	flag.Parse()
 
 	if *printVersion {
-		fmt.Printf("v%s\n", version)
+		fmt.Printf("v%s\n", version) //nolint:forbidigo,revive,errcheck // Easiest way to print to stdout
 		os.Exit(0)
 	}
 
@@ -56,5 +57,5 @@ func main() {
 }
 
 func annotateConfigFilePath(p string) (string, error) {
-	return pathutil.ReplaceHome(p)
+	return pathutil.ReplaceHome(p) //nolint:wrapcheck // No need to wrap this
 }

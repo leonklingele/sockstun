@@ -19,5 +19,5 @@ func ReplaceHome(s string) (string, error) {
 	if err != nil {
 		return "", errors.Wrap(err, "failed to get current user")
 	}
-	return strings.Replace(s, homeVar, u.HomeDir, -1), nil
+	return strings.ReplaceAll(s, homeVar, u.HomeDir), nil
 }
