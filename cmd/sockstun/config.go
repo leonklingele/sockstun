@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/BurntSushi/toml"
@@ -28,10 +29,13 @@ type duration struct {
 func (d *duration) UnmarshalText(text []byte) error {
 	var err error
 	d.Duration, err = time.ParseDuration(string(text))
-	return err
+	if err != nil {
+		return fmt.Errorf("failed to parse duration: %w", err)
+	}
+	return nil
 }
 
-//nolint:unparam
+//nolint:unparam // Required to satisfy the interface
 func (d duration) MarshalText() ([]byte, error) {
 	return []byte(d.String()), nil
 }

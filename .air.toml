@@ -1,0 +1,12 @@
+tmp_dir = "./.air"
+
+[build]
+  bin = "./.air/main"
+  cmd = "BINARY_OUT=./.air/main BUILD_FLAGS=-race make build"
+  delay = 0
+
+[log]
+  time = true
+
+[misc]
+  clean_on_exit = true

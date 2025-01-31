@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"log"
+	"log" //nolint:depguard // TODO: Replace by log/slog
 	"net"
 	"net/url"
 	"strings"
@@ -45,13 +45,12 @@ func (st *SOCKSTunnel) Run(ctx context.Context) error {
 	eg, ctx := errgroup.WithContext(ctx)
 	st.fwdTableMu.RLock()
 	for _, r := range st.fwdTable {
-		r := r
 		eg.Go(func() error {
 			return st.enable(ctx, r)
 		})
 	}
 	st.fwdTableMu.RUnlock()
-	return eg.Wait()
+	return eg.Wait() //nolint:wrapcheck // No need to wrap this
 }
 
 func (st *SOCKSTunnel) enable(ctx context.Context, r fwdRule) error {
@@ -59,7 +58,7 @@ func (st *SOCKSTunnel) enable(ctx context.Context, r fwdRule) error {
 	if err != nil {
 		return errors.Wrap(err, "failed to listen on local socket")
 	}
-	close := (func() func() {
+	shutdown := (func() func() {
 		var once sync.Once
 		return func() {
 			once.Do(func() {
@@ -69,12 +68,12 @@ func (st *SOCKSTunnel) enable(ctx context.Context, r fwdRule) error {
 			})
 		}
 	})()
-	defer close()
+	defer shutdown()
 	st.log.Printf("enabling proxy rule %s", r)
 
 	go func() {
 		<-ctx.Done()
-		close()
+		shutdown()
 	}()
 	for {
 		conn, err := l.Accept()
@@ -82,7 +81,7 @@ func (st *SOCKSTunnel) enable(ctx context.Context, r fwdRule) error {
 			// TODO(leon): remove this string search. That might involve
 			// modifying the standard library to return better error types.
 			if strings.Contains(err.Error(), "use of closed network connection") {
-				return ctx.Err()
+				return ctx.Err() //nolint:wrapcheck // No need to wrap this
 			}
 			st.log.Printf("failed to accept on local socket %s: %v", r.localSock, err)
 			continue
@@ -148,7 +147,7 @@ func (st *SOCKSTunnel) handle(ctx context.Context, conn net.Conn, r fwdRule) err
 			if err != nil {
 				// TODO(leon): remove this string search. That might involve
 				// modifying the standard library to return better error types.
-				if err != io.EOF && !strings.Contains(err.Error(), "use of closed network connection") {
+				if !errors.Is(err, io.EOF) && !strings.Contains(err.Error(), "use of closed network connection") {
 					st.log.Printf("%s: failed to read: %v", r, err)
 				}
 				return
@@ -169,7 +168,7 @@ func (st *SOCKSTunnel) handle(ctx context.Context, conn net.Conn, r fwdRule) err
 	return nil
 }
 
-func New(socksURI string, rwTimeout time.Duration, log *log.Logger) (*SOCKSTunnel, error) {
+func New(socksURI string, rwTimeout time.Duration, logger *log.Logger) (*SOCKSTunnel, error) {
 	su, err := url.Parse(socksURI)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to parse SOCKS URL")
@@ -182,13 +181,13 @@ func New(socksURI string, rwTimeout time.Duration, log *log.Logger) (*SOCKSTunne
 	ctxDialer, ok := dialer.(proxy.ContextDialer)
 	if !ok {
 		// This will never happen. proxy.Direct implements proxy.ContextDialer.
-		panic("failed to type assert to proxy.ContextDialer")
+		panic("failed to type assert to proxy.ContextDialer") //nolint:forbidigo // Somewhat OK here
 	}
 
 	return &SOCKSTunnel{
 		proto:       "tcp",
 		socksDialer: ctxDialer,
 		rwTimeout:   rwTimeout,
-		log:         log,
+		log:         logger,
 	}, nil
 }
