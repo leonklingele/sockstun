@@ -1,10 +1,9 @@
 package pathutil
 
 import (
+	"fmt"
 	"os/user"
 	"strings"
-
-	"github.com/pkg/errors"
 )
 
 const (
@@ -17,7 +16,7 @@ func ReplaceHome(s string) (string, error) {
 	}
 	u, err := user.Current()
 	if err != nil {
-		return "", errors.Wrap(err, "failed to get current user")
+		return "", fmt.Errorf("failed to get current user: %w", err)
 	}
 	return strings.ReplaceAll(s, homeVar, u.HomeDir), nil
 }

@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/BurntSushi/toml"
-	"github.com/pkg/errors"
 )
 
 type config struct {
@@ -17,7 +16,7 @@ type config struct {
 func loadConfig(cfp string) (*config, error) {
 	var conf config
 	if _, err := toml.DecodeFile(cfp, &conf); err != nil {
-		return nil, errors.Wrap(err, "failed to load or parse config file")
+		return nil, fmt.Errorf("failed to load or parse config file: %w", err)
 	}
 	return &conf, nil
 }
