@@ -9,8 +9,6 @@ import (
 
 	"github.com/leonklingele/sockstun"
 	"github.com/leonklingele/sockstun/cmd/sockstun/pathutil"
-
-	"github.com/pkg/errors"
 )
 
 const (
@@ -22,7 +20,7 @@ const (
 func run(cfp string) error {
 	cfp, err := annotateConfigFilePath(cfp)
 	if err != nil {
-		return errors.Wrap(err, "failed to annotate config file path")
+		return fmt.Errorf("failed to annotate config file path: %w", err)
 	}
 	c, err := loadConfig(cfp)
 	if err != nil {
@@ -32,7 +30,7 @@ func run(cfp string) error {
 	logger := log.New(os.Stderr, "", log.LstdFlags)
 	st, err := sockstun.New(c.SOCKSURI, c.RWTimeout.Duration, logger)
 	if err != nil {
-		return errors.Wrap(err, "failed to create sockstun")
+		return fmt.Errorf("failed to create sockstun: %w", err)
 	}
 	for n, r := range c.Rules {
 		st.Add(n, r.LocalSock, r.RemoteSock)

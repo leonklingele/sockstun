@@ -2,6 +2,7 @@ package sockstun
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"log" //nolint:depguard // TODO: Replace by log/slog
@@ -11,7 +12,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/pkg/errors"
 	"golang.org/x/net/proxy"
 	"golang.org/x/sync/errgroup"
 )
@@ -56,7 +56,7 @@ func (st *SOCKSTunnel) Run(ctx context.Context) error {
 func (st *SOCKSTunnel) enable(ctx context.Context, r fwdRule) error {
 	l, err := net.Listen(st.proto, r.localSock)
 	if err != nil {
-		return errors.Wrap(err, "failed to listen on local socket")
+		return fmt.Errorf("failed to listen on local socket: %w", err)
 	}
 	shutdown := (func() func() {
 		var once sync.Once
@@ -117,7 +117,7 @@ func (st *SOCKSTunnel) handle(ctx context.Context, conn net.Conn, r fwdRule) err
 
 	sconn, err := st.socksDialer.DialContext(ctx, st.proto, r.remoteSock)
 	if err != nil {
-		return errors.Wrap(err, "failed to dial SOCKS proxy")
+		return fmt.Errorf("failed to dial SOCKS proxy: %w", err)
 	}
 	oldFunc := cleanupFunc
 	cleanupFunc = func() {
@@ -130,10 +130,10 @@ func (st *SOCKSTunnel) handle(ctx context.Context, conn net.Conn, r fwdRule) err
 	if t := st.rwTimeout; t > 0 {
 		dl := time.Now().Add(t)
 		if err := conn.SetDeadline(dl); err != nil {
-			return errors.Wrap(err, "failed to set conn deadline")
+			return fmt.Errorf("failed to set conn deadline: %w", err)
 		}
 		if err := sconn.SetDeadline(dl); err != nil {
-			return errors.Wrap(err, "failed to set SOCKS deadline")
+			return fmt.Errorf("failed to set SOCKS deadline: %w", err)
 		}
 	}
 
@@ -171,11 +171,11 @@ func (st *SOCKSTunnel) handle(ctx context.Context, conn net.Conn, r fwdRule) err
 func New(socksURI string, rwTimeout time.Duration, logger *log.Logger) (*SOCKSTunnel, error) {
 	su, err := url.Parse(socksURI)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to parse SOCKS URL")
+		return nil, fmt.Errorf("failed to parse SOCKS URL: %w", err)
 	}
 	dialer, err := proxy.FromURL(su, proxy.Direct)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to create SOCKS dialer")
+		return nil, fmt.Errorf("failed to create SOCKS dialer: %w", err)
 	}
 
 	ctxDialer, ok := dialer.(proxy.ContextDialer)
