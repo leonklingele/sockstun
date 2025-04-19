@@ -1,9 +1,9 @@
 module github.com/leonklingele/sockstun
 
-go 1.23.5
+go 1.24.2
 
 require (
-	github.com/BurntSushi/toml v1.4.0
-	golang.org/x/net v0.34.0
-	golang.org/x/sync v0.10.0
+	github.com/BurntSushi/toml v1.5.0
+	golang.org/x/net v0.39.0
+	golang.org/x/sync v0.13.0
 )

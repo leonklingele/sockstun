@@ -1,262 +1,46 @@
-# v1.6.0. Created based on golangci-lint v1.63.4
+# v2.0.1. Created based on golangci-lint v2.1.2
+version: "2"
 
 run:
-  timeout: 5m
-  concurrency: 0
+  relative-path-mode: gomod
   modules-download-mode: readonly
   allow-serial-runners: true
 
-output:
-  sort-results: true
-
 issues:
-  exclude-use-default: false
-  exclude-dirs-use-default: false
-  exclude-case-sensitive: true
-  exclude-generated: strict
   max-issues-per-linter: 0
   max-same-issues: 0
   uniq-by-line: false
-  exclude-rules:
-    - linters:
-        - err113
-      text: "do not define dynamic errors, use wrapped static errors instead*"
   # fix: true
 
-linters-settings:
-  asasalint:
-    use-builtin-exclusions: false
+severity:
+  default: error
 
-  copyloopvar:
-    check-alias: true
-
-  depguard:
-    rules:
-      all:
-        list-mode: lax
-        deny:
-          - pkg: "flag"
-            desc: "`flag` package is only allowed in main.go"
-          - pkg: "io/ioutil"
-            desc: "`io/ioutil` package is deprecated, use the `io` and `os` package instead"
-          - pkg: "log$"
-            desc: "logging is provided by `log/slog`"
-          - pkg: "reflect"
-            desc: "`reflect` package is dangerous to use"
-          - pkg: "unsafe"
-            desc: "`unsafe` package is dangerous to use"
-
-  errcheck:
-    check-type-assertions: true
-    check-blank: true
-    disable-default-exclusions: true
-
-  errchkjson:
-    report-no-exported: true
-
-  exhaustive:
-    check-generated: true
-    default-signifies-exhaustive: true
-
-  forbidigo:
-    forbid:
-      - ^panic$
-      - ^print(ln)?$
-      - ^fmt\.Print(f|ln)?$
-      - ^http\.Default(Client|ServeMux|Transport)$
-      - ^time\.Sleep$
-    analyze-types: true
-
-  gci:
-    sections:
-      - standard
-      # - localmodule # TODO: Investigate why this doesn't work
-      - prefix(github.com/leonklingele/sockstun)
-      - default
-      - blank
-      - dot
-      # - alias
-    custom-order: true
-
-  ginkgolinter:
-    force-expect-to: true
-
-  goconst:
-    numbers: true
-
-  gocritic:
-    enable-all: true
-    disabled-checks:
-      - hugeParam
-      - rangeExprCopy
-      - rangeValCopy
-    settings:
-      captLocal:
-        paramsOnly: false
-      elseif:
-        skipBalanced: false
-      underef:
-        skipRecvDeref: false
-      # NOTE: Set this option to false if other projects rely on this project's code
-      unnamedResult:
-        checkExported: true
-
-  gofumpt:
-    module-path: github.com/leonklingele/sockstun
-    extra-rules: true
-
-  gosec:
-    config:
-      global:
-        show-ignored: true
-        audit: true
-
-  govet:
-    enable-all: true
-    disable:
-      - fieldalignment
-      - shadow
-
-  grouper:
-    const-require-grouping: true
-    import-require-single-import: true
-    import-require-grouping: true
-    # var-require-grouping: true # TODO: Conflicts with gofumpt
-
-  loggercheck:
-    require-string-key: true
-    no-printf-like: true
-
-  misspell:
-    locale: US
-
-  nilnil:
-    detect-opposite: true
-
-  nolintlint:
-    require-explanation: true
-    require-specific: true
-
-  nonamedreturns:
-    report-error-in-defer: true
-
-  perfsprint:
-    err-error: true
-
-  predeclared:
-    q: true
-
-  promlinter:
-    strict: true
-
-  reassign:
-    patterns:
-      - ".*"
-
-  revive:
-    enable-all-rules: true
-    rules:
-      # Provided by mnd linter
-      - name: add-constant
-        disabled: true
-      - name: argument-limit
-        disabled: true
-      # Provided by bidichk
-      - name: banned-characters
-        disabled: true
-      - name: cognitive-complexity
-        disabled: true
-      - name: comment-spacings
-        arguments:
-          - nolint
-      - name: cyclomatic
-        disabled: true
-      - name: enforce-repeated-arg-type-style
-        arguments:
-          - short
-      - name: enforce-slice-style
-        arguments:
-          - make
-      - name: exported
-        disabled: true
-      - name: file-header
-        disabled: true
-      - name: function-length
-        disabled: true
-      - name: function-result-limit
-        arguments: [3]
-      - name: line-length-limit
-        disabled: true
-      - name: max-public-structs
-        disabled: true
-      - name: modifies-parameter
-        disabled: true
-      - name: package-comments
-        disabled: true
-      - name: optimize-operands-order
-        disabled: true
-
-  sloglint:
-    kv-only: true
-    no-global: all
-    context: scope # TODO: Use all
-    args-on-sep-lines: true
-
-  # TODO: spancheck
-
-  stylecheck:
-    checks:
-      - all
-      - -ST1000
-      - -ST1020
-      - -ST1021
-      - -ST1022
-
-  tagalign:
-    strict: true
-
-  tagliatelle:
-    case:
-      rules:
-        json: snake
-
-  tenv:
-    all: true
-
-  testifylint:
-    enable-all: true
-    formatter:
-      require-f-funcs: true
-
-  testpackage:
-    skip-regexp: "^$"
-
-  unparam:
-    # NOTE: Set this option to false if other projects rely on this project's code
-    check-exported: true
-
-  unused:
-    # parameters-are-used: false # TODO: Fix issue with this option (upstream)
-    local-variables-are-used: false
-    # NOTE: Set these options to true if other projects rely on this project's code
-    field-writes-are-uses: false
-    exported-fields-are-used: false
-
-  usestdlibvars:
-    http-method: true
-    http-status-code: true
-    time-weekday: true
-    time-month: true
-    time-layout: true
-    crypto-hash: true
-    default-rpc-path: true
-    sql-isolation-level: true
-    tls-signature-scheme: true
-    constant-kind: true
-
-  usetesting:
-    os-setenv: true
-    os-temp-dir: true
+formatters:
+  enable:
+    - gci
+    - gofmt
+    - gofumpt
+    - goimports
+    # - golines # TODO
+  settings:
+    gci:
+      sections:
+        - standard
+        # - localmodule # TODO: Investigate why this doesn't work
+        - prefix(github.com/leonklingele/sockstun)
+        - default
+        - blank
+        - dot
+        # - alias
+      custom-order: true
+    gofumpt:
+      module-path: github.com/leonklingele/sockstun
+      extra-rules: true
+    goimports:
+      local-prefixes:
+        - github.com/leonklingele/sockstun
+  exclusions:
+    generated: strict
 
 linters:
   enable:
@@ -286,8 +70,8 @@ linters:
     - fatcontext
     - forbidigo
     - forcetypeassert
+    - funcorder
     # - funlen
-    - gci
     - ginkgolinter
     - gocheckcompilerdirectives
     - gochecknoglobals
@@ -299,15 +83,11 @@ linters:
     # - gocyclo
     # - godot
     # - godox
-    - gofmt
-    - gofumpt
     # - goheader
-    # - goimports
     - gomoddirectives
     # - gomodguard
     - goprintffuncname
     - gosec
-    - gosimple
     - gosmopolitan
     - govet
     - grouper
@@ -327,7 +107,7 @@ linters:
     - mnd
     - musttag
     - nakedret
-    # - nestif
+    - nestif
     - nilerr
     - nilnesserr
     - nilnil
@@ -350,10 +130,8 @@ linters:
     - spancheck
     - sqlclosecheck
     - staticcheck
-    - stylecheck
     - tagalign
     - tagliatelle
-    - tenv
     - testableexamples
     - testifylint
     - testpackage
@@ -370,3 +148,218 @@ linters:
     - wrapcheck
     # - wsl
     - zerologlint
+  settings:
+    asasalint:
+      use-builtin-exclusions: false
+    copyloopvar:
+      check-alias: true
+    depguard:
+      rules:
+        all:
+          list-mode: lax
+          deny:
+            - pkg: flag
+              desc: "`flag` package is only allowed in main.go"
+            - pkg: io/ioutil
+              desc: "`io/ioutil` package is deprecated, use the `io` and `os` package instead"
+            - pkg: log$
+              desc: logging is provided by `log/slog`
+            - pkg: math/rand$
+              desc: use `math/rand/v2` instead
+            - pkg: reflect
+              desc: "`reflect` package is dangerous to use"
+            - pkg: unsafe
+              desc: "`unsafe` package is dangerous to use"
+            - pkg: golang.org/x/crypto/ed25519
+              desc: now part of the stdlib, use `crypto/ed25519` instead
+            - pkg: golang.org/x/crypto/hkdf
+              desc: now part of the stdlib, use `crypto/hkdf` instead
+            - pkg: golang.org/x/crypto/pbkdf2
+              desc: now part of the stdlib, use `crypto/pbkdf2` instead
+            - pkg: golang.org/x/crypto/sha3
+              desc: now part of the stdlib, use `crypto/sha3` instead
+    errcheck:
+      check-blank: true
+      check-type-assertions: true
+      disable-default-exclusions: true
+    errchkjson:
+      report-no-exported: true
+    exhaustive:
+      default-signifies-exhaustive: true
+    fatcontext:
+      check-struct-pointers: true
+    forbidigo:
+      forbid:
+        - pattern: ^panic$
+        - pattern: ^print(ln)?$
+        - pattern: ^fmt\.Print(f|ln)?$
+        - pattern: ^http\.Default(Client|ServeMux|Transport)$
+        - pattern: ^time\.Sleep$
+      analyze-types: true
+    funcorder:
+      struct-method: false
+    ginkgolinter:
+      force-expect-to: true
+    goconst:
+      numbers: true
+      find-duplicates: true
+      eval-const-expressions: true
+    gocritic:
+      enable-all: true
+      disabled-checks:
+        - hugeParam
+        - rangeExprCopy
+        - rangeValCopy
+      settings:
+        captLocal:
+          paramsOnly: false
+        elseif:
+          skipBalanced: false
+        underef:
+          skipRecvDeref: false
+        # NOTE: Set this option to false if other projects rely on this project's code
+        unnamedResult:
+          checkExported: true
+    gosec:
+      confidence: low
+      config:
+        global:
+          audit: true
+          show-ignored: true
+    govet:
+      enable-all: true
+      disable:
+        - fieldalignment
+        - shadow
+    grouper:
+      const-require-grouping: true
+      import-require-single-import: true
+      import-require-grouping: true
+      # var-require-grouping: true # TODO: Conflicts with gofumpt
+    loggercheck:
+      require-string-key: true
+      no-printf-like: true
+    misspell:
+      locale: US
+    nilnil:
+      only-two: false
+      detect-opposite: true
+    nolintlint:
+      require-explanation: true
+      require-specific: true
+    nonamedreturns:
+      report-error-in-defer: true
+    perfsprint:
+      err-error: true
+    predeclared:
+      qualified-name: true
+    promlinter:
+      strict: true
+    reassign:
+      patterns:
+        - .*
+    revive:
+      confidence: 0
+      severity: error
+      enable-all-rules: true
+      rules:
+        # Provided by mnd linter
+        - name: add-constant
+          disabled: true
+        - name: argument-limit
+          disabled: true
+        # Provided by bidichk
+        - name: banned-characters
+          disabled: true
+        - name: cognitive-complexity
+          disabled: true
+        - name: comment-spacings
+          arguments:
+            - nolint
+        - name: cyclomatic
+          disabled: true
+        - name: enforce-repeated-arg-type-style
+          arguments:
+            - short
+        - name: enforce-slice-style
+          arguments:
+            - make
+        - name: exported
+          disabled: true
+        - name: file-header
+          disabled: true
+        - name: function-length
+          disabled: true
+        - name: function-result-limit
+          arguments:
+            - 3
+        - name: line-length-limit
+          disabled: true
+        - name: max-public-structs
+          disabled: true
+        - name: modifies-parameter
+          disabled: true
+        - name: nested-structs
+          disabled: true
+        - name: package-comments
+          disabled: true
+        - name: optimize-operands-order
+          disabled: true
+      directives:
+        - name: specify-disable-reason
+          severity: error
+    # TODO: spancheck
+    sloglint:
+      kv-only: true
+      no-global: all
+      context: all
+      args-on-sep-lines: true
+    staticcheck:
+      checks:
+        - all
+        - -ST1000
+        - -ST1020
+        - -ST1021
+        - -ST1022
+    tagalign:
+      strict: true
+    tagliatelle:
+      case:
+        rules:
+          json: snake
+    testifylint:
+      enable-all: true
+      formatter:
+        require-f-funcs: false
+    testpackage:
+      skip-regexp: ^$
+    unparam:
+      # NOTE: Set this option to false if other projects rely on this project's code
+      check-exported: true
+    unused:
+      # NOTE: Set this option to true if other projects rely on this project's code
+      field-writes-are-uses: false
+      # NOTE: Set this option to true if other projects rely on this project's code
+      exported-fields-are-used: false
+      local-variables-are-used: false
+      # parameters-are-used: false # TODO: Fix issue with this option (upstream)
+    usestdlibvars:
+      http-method: true
+      http-status-code: true
+      time-weekday: true
+      time-month: true
+      time-layout: true
+      crypto-hash: true
+      default-rpc-path: true
+      sql-isolation-level: true
+      tls-signature-scheme: true
+      constant-kind: true
+    usetesting:
+      os-temp-dir: true
+  exclusions:
+    generated: strict
+    warn-unused: true
+    rules:
+      - linters:
+          - err113
+        text: (?i)do not define dynamic errors, use wrapped static errors instead*
