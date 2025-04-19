@@ -45,7 +45,7 @@ func main() {
 	flag.Parse()
 
 	if *printVersion {
-		fmt.Printf("v%s\n", version) //nolint:forbidigo,revive,errcheck // Easiest way to print to stdout
+		fmt.Printf("v%s\n", version) //nolint:forbidigo,errcheck // Easiest way to print to stdout
 		os.Exit(0)
 	}
 

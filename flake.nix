@@ -24,7 +24,7 @@
             pkgs.gnumake
 
             # Backend
-            pkgs.go
+            unstable.go
             unstable.golangci-lint
             pkgs.air
           ];
